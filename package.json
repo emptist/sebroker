@@ -1,0 +1,22 @@
+{
+  "name": "sebroker",
+  "version": "0.1.7",
+  "description": "web client connecting to web api of brokers.",
+  "main": "index.js",
+  "scripts": {
+    "preversion": "coffee -bcmo lib src; git commit -am 'modified and re-build js;'",
+    "postversion": "git push;",
+    "prepublish": "cd ..; echo 現在發佈",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emptist/sebroker.git"
+  },
+  "author": "Jigme Ko <jigme1968@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emptist/sebroker/issues"
+  },
+  "homepage": "https://github.com/emptist/sebroker#readme"
+}

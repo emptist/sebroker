@@ -1,0 +1,56 @@
+GET /service/js/cookie.js HTTP/1.1
+Host: service.htsc.com.cn
+Connection: keep-alive
+Accept: */*
+Cache-Control: max-age=0
+If-None-Match: "5357b830-52c"
+If-Modified-Since: Wed, 23 Apr 2014 12:55:12 GMT
+User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36
+DNT: 1
+Referer: https://service.htsc.com.cn/service/loginAction.do?method=login
+Accept-Encoding: gzip, deflate, sdch
+Accept-Language: en-US,en;q=0.8,zh-TW;q=0.6,zh;q=0.4,zh-CN;q=0.2,en-GB;q=0.2
+Cookie: __utma=249860889.1993829779.1432911006.1440648966.1446029513.4; __utmz=249860889.1432911006.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); JSESSIONID=THWhW2dP1Wh2Rgq3Wm8yzHjLQQj3V1RH3Q8p9gvJ3nwnv48lHvLg!104243085; SESSION_COOKIE=71761
+
+
+var Cookie   = new Object();
+Cookie.day   = 86400000;
+Cookie.week  = Cookie.day * 7;
+Cookie.month = Cookie.day * 31;
+Cookie.year  = Cookie.day * 365;
+
+function getCookie(name) {
+  var cookies = document.cookie;
+  var start = cookies.indexOf(name + '=');
+  if (start == -1) return null;
+  var len = start + name.length + 1;
+  var end = cookies.indexOf(';',len);
+  if (end == -1) end = cookies.length;
+  return unescape(cookies.substring(len,end));
+}
+
+function setCookie(name, value, expires, path, domain, secure) {
+  value = escape(value);
+  expires = (expires) ? ';expires=' + expires.toGMTString() :'';
+  path    = (path)    ? ';path='    + path                  :'';
+  domain  = (domain)  ? ';domain='  + domain                :'';
+  secure  = (secure)  ? ';secure'                           :'';
+
+  document.cookie =
+    name + '=' + value + expires + path + domain + secure;
+}
+
+function deleteCookie(name, path, domain) {
+  var expires = ';expires=Thu, 01-Jan-70 00:00:01 GMT';
+  (path)    ? ';path='    + path                  : '';
+  (domain)  ? ';domain='  + domain                : '';
+
+  if (getCookie(name))
+    document.cookie = name + '=' + expires + path + domain;
+}
+function checkCookieExist( name )
+{if( getCookie(name) )
+     return true;
+ else
+     return false;
+}
