@@ -3,9 +3,8 @@ util = require 'util'
 async = require 'async'
 request = require 'request'
 qs = require 'querystring'
-#ocr =  require 'ocr-by-image-url'
 vcode = require './getvcode'
-hddInfo = require './hddInfo.coffee.md' #'ST9120817AS'
+hddInfo = require './hddInfo' #'ST9120817AS'
 address = require './getaddress'
 {userName,trdpwd,trdpwdEns,servicePwd} = require './.mainaccount'
 
@@ -69,7 +68,7 @@ async.parallel obj, (err,results)->
       if err then console.error e
       if (body.indexOf '欢迎')<0
         console.log 'not yet...'
-        return setTimeout login(options, callback), 5000
+        # return setTimeout(login(options, callback), 5000)
       callback null, body
 
   #request

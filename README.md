@@ -32,3 +32,25 @@ http://alexehrnschwender.com/2013/07/client-side-auth-session-mgmt-backbone-node
 https://auth0.com/blog/2014/01/07/angularjs-authentication-with-cookies-vs-token/
 http://stackoverflow.com/questions/10291000/persisting-a-cookie-based-session-over-node-http-proxy
 https://hacks.mozilla.org/2012/12/using-secure-client-side-sessions-to-build-simple-and-scalable-node-js-applications-a-node-js-holiday-season-part-3/
+
+## 所需支持庫
+讀取驗證碼需手工安裝 tesseract.
+因使用 ocr-by-image-url (based on  node-tesseract, based on tesseract) 須另行安裝
+tesseract, 方法如下:
+
+```bash
+brew install tesseract #--all-languages  # on Mac,先簡單安裝,如果不能識別,則加全語言
+```
+識別驗證碼在getvcode中實現經實測成功,可將文件末測試部分的注釋去掉進行實測.
+
+附: 官方說明其他使用方法
+```javascript
+ocr.getImageText('http://image.com/cat-poem.png', function(error, text){
+    console.log(text.trim());
+});
+// With proxy
+var proxy = 'http://user:pass@proxy.server.com:3128';
+ocr.getImageText('http://image.com/cat.png', proxy, function(error, text){
+    console.log(text.trim);
+});
+```
