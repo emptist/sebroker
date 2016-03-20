@@ -71,6 +71,7 @@ async.parallel obj, (err,results)->
         return setTimeout(login(options, callback), 5000)
       callback null, body
 
-  #request
+  ### test: fails
   login options, (e,b)->
     console.log b
+  ###
