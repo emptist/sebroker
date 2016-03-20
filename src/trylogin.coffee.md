@@ -77,7 +77,7 @@ http://www.oschina.net/translate/web-scraping-with-node-js?print
         {ipmac:{ip,ipv4,mac}, vcode,req} = results
         # 緊接著就登錄
         url = 'https://service.htsc.com.cn/service/loginAction.do?method=login'
-        headers =
+        headers = {
           Origin: 'https://service.htsc.com.cn'
           Accept-Encoding: 'gzip, deflate'
           Host:"service.htsc.com.cn"
@@ -90,10 +90,10 @@ http://www.oschina.net/translate/web-scraping-with-node-js?print
           Referer: "https://service.htsc.com.cn/service/login.jsp"
           Connection: "keep-alive"
           Content-Length: "336"
-          DNT: "1"
+          DNT: "1"}
 
 
-        options =
+        options ={
           method: "POST"
           url: "https://service.htsc.com.cn/service/loginAction.do?method=login"
           httpVersion: "HTTP/1.1"
@@ -114,7 +114,8 @@ http://www.oschina.net/translate/web-scraping-with-node-js?print
           trdpwd: '196605'
           trdpwdEns: '196605'
           vcode: "#{vcode.trim()}"
-
+        }
+        
         #request
         req options,(e,r, body)->
           if err then console.log e
