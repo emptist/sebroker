@@ -71,14 +71,15 @@ async.parallel obj, (err,results)->
     #forever: true
     #jar: true
 
+  ###
+    如果登錄成功,body中會找到有 '欢迎' 兩個字:
+    沒有就不成功,實測結果是,僅獲得web交易頁面文件而已
+    不知道錯在哪裡
+  ###
   login = (options, callback)->
     request options, (e,r, body)->
-      if err then console.error e
-      ###
-        如果登錄成功,body中會找到有 '欢迎' 兩個字:
-        沒有就不成功,實測結果是,僅獲得web交易頁面文件而已
-        不知道錯在哪裡
-      ###
+      if err
+        console.error e
       else
         if (body.indexOf '欢迎') < 0
           callback '登錄不成功', body
