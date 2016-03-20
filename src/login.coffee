@@ -8,6 +8,13 @@ hddInfo = require './hddInfo' #'ST9120817AS'
 address = require './getaddress'
 {userName,trdpwd,trdpwdEns,servicePwd} = require './.mainaccount'
 
+###
+  採用request模塊,實現登錄的理論過程:
+    get 'https://service.htsc.com.cn/service/pic/verifyCodeImage.jsp?ran=' 獲取驗證碼
+    get 'https://service.htsc.com.cn/service/login.jsp' 以便取得並記住cookies
+    post  'https://service.htsc.com.cn/service/loginAction.do?method=login' 登錄
+###
+
 vcurl = "https://service.htsc.com.cn/service/pic/verifyCodeImage.jsp?ran=#{Math.random()}"
 
 
@@ -32,9 +39,10 @@ r = (callback) ->
       ###
 
 obj =
+  req: (callback)-> setTimeout (-> r callback), 200
   vcode: (callback)-> setTimeout (-> vcode vcurl, callback), 200
   ipmac: (callback)-> setTimeout (-> address callback), 400
-  req: (callback)-> setTimeout (-> r callback), 200
+  #req: (callback)-> setTimeout (-> r callback), 200
 
 async.parallel obj, (err,results)->
   {ipmac:{ip,mac}, vcode,req} = results
@@ -66,12 +74,22 @@ async.parallel obj, (err,results)->
   login = (options, callback)->
     request options, (e,r, body)->
       if err then console.error e
-      if (body.indexOf '欢迎')<0
-        console.log 'not yet...'
-        return setTimeout(login(options, callback), 5000)
-      callback null, body
+      ###
+        如果登錄成功,body中會找到有 '欢迎' 兩個字:
+        沒有就不成功,實測結果是,僅獲得web交易頁面文件而已
+        不知道錯在哪裡
+      ###
+      else
+        if (body.indexOf '欢迎') < 0
+          callback '登錄不成功', body
+          #return setTimeout(login(options, callback), 5000)
+        else
+          callback null, body
 
-  ### test: fails
-  login options, (e,b)->
-    console.log b
+  ### test: fails 請去掉注釋運行測試
+  login options, (err, body)->
+    if err
+      console.error err
+    else
+      console.log body
   ###
