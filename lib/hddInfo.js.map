@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "hddInfo.js",
+  "sourceRoot": "..",
+  "sources": [
+    "src/hddInfo.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA,MAAM,CAAC,OAAP,GAAe"
+}
