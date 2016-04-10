@@ -10,7 +10,7 @@ vcode = (viurl, callback)->
       return vcode viurl, callback
 
     code = text.trim()
-    # 此處可做篩選,已知驗證碼只含英文字母或數字,並且目前為4位數字
+    # 此處可做篩選,已知驗證碼只含英文字母或數字,並且目前為4位
     unless /^\w{4}$/.test code
       return vcode viurl, callback
     return callback null, code
