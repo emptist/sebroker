@@ -76,21 +76,14 @@ async.parallel obj, (err,results)->
     沒有就不成功,實測結果是,僅獲得web交易頁面文件而已
     不知道錯在哪裡
   ###
-  login = (options, callback)->
-    request options, (e,r, body)->
+  callback = (err,res, body)->
       if err
-        console.error e
+        console.error err
       else
         if (body.indexOf '欢迎') < 0
-          callback '登錄不成功', body
+          console.error res, '登錄不成功'
           #return setTimeout(login(options, callback), 5000)
         else
-          callback null, body
+          console.log res, body
 
-  ### test: fails 請去掉注釋運行測試
-  login options, (err, body)->
-    if err
-      console.error err
-    else
-      console.log body
-  ###
+  request options, callback
