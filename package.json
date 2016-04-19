@@ -1,6 +1,6 @@
 {
   "name": "sebroker",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "web client connecting to web api of brokers.",
   "main": "index.js",
   "scripts": {
