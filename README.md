@@ -116,3 +116,7 @@ ocr.getImageText('http://image.com/cat.png', proxy, function(error, text){
     console.log(text.trim);
 });
 ```
+
+
+# misc
+https://coderwall.com/p/9cifuw/scraping-web-pages-using-node-js-using-request-promise
