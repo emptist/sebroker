@@ -120,3 +120,13 @@ ocr.getImageText('http://image.com/cat.png', proxy, function(error, text){
 
 # misc
 https://coderwall.com/p/9cifuw/scraping-web-pages-using-node-js-using-request-promise
+
+
+# request enhancement
+https://www.npmjs.com/package/easy-api-request
+https://www.npmjs.com/package/request-cookies
+https://www.npmjs.com/package/scraper-request
+https://www.npmjs.com/package/client-request
+https://www.npmjs.com/package/retry-request
+https://www.npmjs.com/package/oauth-request
+https://github.com/FGRibreau/node-request-retry/blob/master/package.json
