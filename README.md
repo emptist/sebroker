@@ -123,6 +123,7 @@ https://coderwall.com/p/9cifuw/scraping-web-pages-using-node-js-using-request-pr
 
 
 # request enhancement
+needle
 https://www.npmjs.com/package/easy-api-request
 https://www.npmjs.com/package/request-cookies
 https://www.npmjs.com/package/scraper-request
