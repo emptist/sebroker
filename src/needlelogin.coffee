@@ -7,29 +7,6 @@ vcode = require './getvcode'
 hddInfo = require './hddInfo' #'ST9120817AS'
 address = require './getaddress'
 {userName,trdpwd,trdpwdEns,servicePwd} = require './.mainaccount'
-{postheaders,getheaders}=require '../refs/experiments/options'
-{fetchUrl, fetchStream,CookieJar} = require 'fetch'
-
-
-delete postheaders.cookies
-
-cookies = new CookieJar()
-cookies.setCookie getheaders.cookies
-oldcookies = cookies
-
-
-url = 'https://service.htsc.com.cn/service/login.jsp'
-fetchpage = (callback) ->
-  fetchUrl url,
-    {headers: getheaders
-    method: 'GET'
-    #cookies: cookies
-    cookieJar: cookies },
-    (err,meta, body) ->
-      callback err,meta,body
-
-#fetchpage (err, meta, body)->
-#  console.log meta.cookieJar == oldcookies #, body.toString()
 
 ###
   採用request模塊,實現登錄的理論過程:
@@ -45,7 +22,8 @@ vcurl = "https://service.htsc.com.cn/service/pic/verifyCodeImage.jsp?ran=#{Math.
 r = (callback) ->
   request.get
     url: 'https://service.htsc.com.cn/service/login.jsp'
-    headers: getheaders
+    headers:
+      "User-Agent":"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36"
     forever: true
     jar: true
     (e,r, body) ->
@@ -61,7 +39,6 @@ r = (callback) ->
       ###
 
 obj =
-  fet: (callback)-> setTimeout (-> fetchpage callback), 200
   req: (callback)-> setTimeout (-> r callback), 200
   vcode: (callback)-> setTimeout (-> vcode vcurl, callback), 200
   ipmac: (callback)-> setTimeout (-> address callback), 400
@@ -71,17 +48,14 @@ async.parallel obj, (err,results)->
   {ipmac:{ip,mac}, vcode,req} = results
   # 緊接著就登錄
   url = 'https://service.htsc.com.cn/service/loginAction.do?method=login'
-  postheaders.cookies = cookies.cookies
+
   options =
-    method: "POST"
+    method: "GET" # "POST"
     url: url
-    headers: postheaders
+    headers:
+      "User-Agent":"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36"
     loginEvent:1
     topath: null
-    jar:true
-    payload:"userType=jy&loginEvent=1&trdpwdEns=2d8c0c21d479305c539e7a49ecd87d4d&macaddr=60:33:4B:09:BF:0F&hddInfo=#{hddInfo}&lipInfo=192.168.1.101+&CPU=QkZFQkZCRkYwMDAzMDY2MQ%3D%3D&PCN=U0RXTS0yMDEzMDkxNFNX&PI=QyxOVEZTLDYwLjAwMzg%3D&topath=null&accountType=1&userName=080300007199&servicePwd=19660522&trdpwd=2d8c0c21d479305c539e7a49ecd87d4d&vcode=#{vcode.trim()}"
-
-  payload =
     accountType: 1
     userType: 'jy'
     userName: userName
@@ -102,15 +76,14 @@ async.parallel obj, (err,results)->
     沒有就不成功,實測結果是,僅獲得web交易頁面文件而已
     不知道錯在哪裡
   ###
-  callback = (err,res, data)->
-    if err
-      console.error err
-    else
-      body = data.toString()
-      if (body.indexOf '欢迎') < 0
-        console.error res#.session.toString(), '登錄不成功'
-        #return setTimeout(login(options, callback), 5000)
+  callback = (err,res, body)->
+      if err
+        console.error err
       else
-        console.log res, body
+        if (body.indexOf '欢迎') < 0
+          console.error res, '登錄不成功'
+          #return setTimeout(login(options, callback), 5000)
+        else
+          console.log res, body
 
   request options, callback
