@@ -26,7 +26,7 @@ fetchpage = (callback) ->
     #cookies: cookies
     cookieJar: cookies },
     (err,meta, body) ->
-      callback err,meta,body
+      callback err,meta
 
 #fetchpage (err, meta, body)->
 #  console.log meta.cookieJar == oldcookies #, body.toString()
@@ -68,7 +68,7 @@ obj =
   #req: (callback)-> setTimeout (-> r callback), 200
 
 async.parallel obj, (err,results)->
-  {ipmac:{ip,mac}, vcode,req} = results
+  {ipmac:{ip,mac}, vcode,req, fet} = results
   # 緊接著就登錄
   url = 'https://service.htsc.com.cn/service/loginAction.do?method=login'
   postheaders.cookies = cookies.cookies

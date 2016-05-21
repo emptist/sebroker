@@ -1,89 +1,133 @@
-# login ht
+#http://stackoverflow.com/questions/14551194/how-are-parameters-sent-in-an-http-post-request
+
 util = require 'util'
 async = require 'async'
-request = require 'request'
-qs = require 'querystring'
+#qs = require 'querystring'
 vcode = require './getvcode'
 hddInfo = require './hddInfo' #'ST9120817AS'
 address = require './getaddress'
 {userName,trdpwd,trdpwdEns,servicePwd} = require './.mainaccount'
+{postheaders,getheaders}=require '../refs/experiments/options'
+needle = require 'needle'
+{fetchUrl, fetchStream,CookieJar} = require 'fetch'
 
-###
-  採用request模塊,實現登錄的理論過程:
-    get 'https://service.htsc.com.cn/service/pic/verifyCodeImage.jsp?ran=' 獲取驗證碼
-    get 'https://service.htsc.com.cn/service/login.jsp' 以便取得並記住cookies
-    post  'https://service.htsc.com.cn/service/loginAction.do?method=login' 登錄
-###
+
+delete postheaders.cookies
+
+cookies = new CookieJar()
+cookies.setCookie getheaders.cookies
+oldcookies = cookies
+
+options =
+  headers: getheaders
+  method: 'GET'
+  #cookies: cookies
+  cookieJar: cookies
+
+url = 'https://service.htsc.com.cn/service/login.jsp'
+fetchpage = (callback) ->
+  fetchUrl url,options,(err, meta, body) ->
+    if err?
+      console.error err
+      return
+    else
+      callback err, meta.cookieJar.cookies
+
+fetchpage (err, meta)->
+  console.log  "ok"#meta #.cookieJar == oldcookies #, body.toString()
+
+
+url = 'https://service.htsc.com.cn/service/login.jsp'
+options =
+  headers: getheaders
+  method: 'GET'
+  cookies: cookies.cookies
+  parse_cookies: true
+  follow_set_cookies: true
+
+
+getpage = (callback) ->
+  needle.get url,options,(err, resp, body) ->
+    if err?
+      callback err
+    else
+      #console.log resp.cookies
+      callback err,resp
+
+#getpage (resp)->
+#  console.log resp.cookies #Jar == oldcookies #, body.toString()
+
+##
 
 vcurl = "https://service.htsc.com.cn/service/pic/verifyCodeImage.jsp?ran=#{Math.random()}"
 
-
-
-r = (callback) ->
-  request.get
-    url: 'https://service.htsc.com.cn/service/login.jsp'
-    headers:
-      "User-Agent":"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36"
-    forever: true
-    jar: true
-    (e,r, body) ->
-      #console.log r.headers
-      callback e,r.headers
-
-      ###
-      if e?
-        callback e
-      else
-        console.log 'get:',request
-        callback null, request
-      ###
-
 obj =
-  req: (callback)-> setTimeout (-> r callback), 200
-  vcode: (callback)-> setTimeout (-> vcode vcurl, callback), 200
+  fet: (callback)-> setTimeout (-> fetchpage callback), 400
+  req: (callback)-> setTimeout (-> getpage callback), 400
+  vcode: (callback)-> setTimeout (-> vcode vcurl, callback), 400
   ipmac: (callback)-> setTimeout (-> address callback), 400
-  #req: (callback)-> setTimeout (-> r callback), 200
 
 async.parallel obj, (err,results)->
-  {ipmac:{ip,mac}, vcode,req} = results
+  #{ipmac:{ip,mac}, vcode, req, fet} = results
+  {ipmac:{ip,mac}, vcode} = results
+
+
   # 緊接著就登錄
+  cookies = cookies.cookies
+  postheaders.cookies = cookies
+  console.log vcode.trim(),cookies
+
   url = 'https://service.htsc.com.cn/service/loginAction.do?method=login'
 
   options =
-    method: "GET" # "POST"
+    method: "POST"
     url: url
-    headers:
-      "User-Agent":"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36"
-    loginEvent:1
-    topath: null
-    accountType: 1
-    userType: 'jy'
-    userName: userName
-    trdpwd: trdpwd
-    trdpwdEns: trdpwdEns
-    servicePwd: servicePwd
-    macaddr:'60:33:4B:09:BF:0F'
-    lipInfo: "#{ip}"
-    vcode: "#{vcode.trim()}"
-    hddInfo: "#{hddInfo}"
-    #queryString:
-      #method: "login"
-    #forever: true
-    #jar: true
+    headers: postheaders
+    cookies: cookies
+    parse_cookies: true
+    follow_set_cookies: true
 
-  ###
-    如果登錄成功,body中會找到有 '欢迎' 兩個字:
-    沒有就不成功,實測結果是,僅獲得web交易頁面文件而已
-    不知道錯在哪裡
-  ###
-  callback = (err,res, body)->
-      if err
-        console.error err
+  p1 = "userType=jy&loginEvent=1&trdpwdEns=2d8c0c21d479305c539e7a49ecd87d4d&"
+  p2 = "macaddr=60:33:4B:09:BF:0F&hddInfo=#{hddInfo}&lipInfo=#{ip}&"
+  p3 = "CPU=QkZFQkZCRkYwMDAzMDY2MQ%3D%3D&PCN=U0RXTS0yMDEzMDkxNFNX&PI=QyxOVEZTLDYwLjAwMzg%3D&"
+  p4 = "topath=null&accountType=1&userName=080300007199&"
+  p5 = "servicePwd=19660522&trdpwd=2d8c0c21d479305c539e7a49ecd87d4d&vcode=#{vcode.trim()}"
+
+  payload = "#{p1}#{p2}#{p4}#{p5}"
+
+  backup = {
+      loginEvent: 1
+      topath: null
+      accountType: 1
+      userType: 'jy'
+      userName: userName
+      trdpwd: trdpwd
+      trdpwdEns: trdpwdEns
+      servicePwd: servicePwd
+      macaddr:'60:33:4B:09:BF:0F'
+      lipInfo: "#{ip}"
+      vcode: "#{vcode.trim()}"
+      hddInfo: "#{hddInfo}"
+    }
+
+  callback = (err, resp, body)->
+    if err
+      console.error err
+    else
+      #body = data.toString()
+      if (body.indexOf '欢迎') < 0
+        console.error resp.cookies,body, '登錄不成功'
+        #return setTimeout(login(options, callback), 5000)
       else
-        if (body.indexOf '欢迎') < 0
-          console.error res, '登錄不成功'
-          #return setTimeout(login(options, callback), 5000)
-        else
-          console.log res, body
+        console.log resp.cookies, body
 
-  request options, callback
+  needle.post url, options, payload, callback
+
+####
+
+###  採用fetch模塊,實現登錄的理論過程:
+    get 'https://service.htsc.com.cn/service/pic/verifyCodeImage.jsp?ran=' 獲取驗證碼
+    get 'https://service.htsc.com.cn/service/login.jsp' 以便取得並記住cookies
+    post  'https://service.htsc.com.cn/service/loginAction.do?method=login' 登錄
+
+###
