@@ -122,7 +122,7 @@ async.parallel obj, (err,results)->
         console.log resp.cookies, body
 
   needle.post url, options, payload, callback
-
+  #needle.post url, payload, options, callback
 ####
 
 ###  採用fetch模塊,實現登錄的理論過程:
