@@ -30,11 +30,16 @@
   "dependencies": {
     "address": "^1.0.0",
     "async": "^2.0.0-rc.1",
+    "cookie": "^0.3.1",
     "fetch": "^1.0.1",
+    "form-data": "^1.0.0-rc4",
     "got": "^6.3.0",
+    "ib-sdk": "^0.2.0",
     "needle": "^1.0.0",
+    "node-libcurl": "^1.0.0",
     "ocr-by-image-url": "0.0.1",
     "querystring": "^0.2.0",
-    "request": "^2.69.0"
+    "request": "^2.69.0",
+    "run-waterfall": "^1.1.3"
   }
 }

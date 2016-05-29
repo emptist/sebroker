@@ -72,36 +72,41 @@ async.parallel obj, (err,results)->
   # 緊接著就登錄
   url = 'https://service.htsc.com.cn/service/loginAction.do?method=login'
   postheaders.cookies = cookies.cookies
+
+  serialize = (obj) ->
+   str = []
+   for p,v of obj
+    if obj.hasOwnProperty(p)
+     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
+   str.join("&")
+
+  payload =
+    loginEvent: 1
+    trdpwdEns: trdpwdEns
+    macaddr:'60:33:4B:09:BF:0F'
+    hddInfo: "#{hddInfo}"
+    lipInfo: "#{ip}"
+    topath: null
+    accountType: 1
+    userName: userName
+    servicePwd: servicePwd
+    trdpwd: trdpwd
+    vcode: "#{vcode.trim()}"
+    userType: 'jy'
+
   options =
     method: "POST"
     url: url
     headers: postheaders
-    loginEvent:1
-    topath: null
     jar:true
-    payload:"userType=jy&loginEvent=1&trdpwdEns=2d8c0c21d479305c539e7a49ecd87d4d&macaddr=60:33:4B:09:BF:0F&hddInfo=#{hddInfo}&lipInfo=192.168.1.101+&CPU=QkZFQkZCRkYwMDAzMDY2MQ%3D%3D&PCN=U0RXTS0yMDEzMDkxNFNX&PI=QyxOVEZTLDYwLjAwMzg%3D&topath=null&accountType=1&userName=080300007199&servicePwd=19660522&trdpwd=2d8c0c21d479305c539e7a49ecd87d4d&vcode=#{vcode.trim()}"
-
-  payload =
-    accountType: 1
-    userType: 'jy'
-    userName: userName
-    trdpwd: trdpwd
-    trdpwdEns: trdpwdEns
-    servicePwd: servicePwd
-    macaddr:'60:33:4B:09:BF:0F'
-    lipInfo: "#{ip}"
-    vcode: "#{vcode.trim()}"
-    hddInfo: "#{hddInfo}"
-    #queryString:
-      #method: "login"
-    #forever: true
-    #jar: true
+    payload: serialize payload # "userType=jy&loginEvent=1&trdpwdEns=2d8c0c21d479305c539e7a49ecd87d4d&macaddr=60:33:4B:09:BF:0F&hddInfo=#{hddInfo}&lipInfo=192.168.1.101+&CPU=QkZFQkZCRkYwMDAzMDY2MQ%3D%3D&PCN=U0RXTS0yMDEzMDkxNFNX&PI=QyxOVEZTLDYwLjAwMzg%3D&topath=null&accountType=1&userName=080300007199&servicePwd=19660522&trdpwd=2d8c0c21d479305c539e7a49ecd87d4d&vcode=#{vcode.trim()}"
 
   ###
     如果登錄成功,body中會找到有 '欢迎' 兩個字:
     沒有就不成功,實測結果是,僅獲得web交易頁面文件而已
     不知道錯在哪裡
   ###
+
   callback = (err,res, data)->
     if err
       console.error err

@@ -93,22 +93,28 @@ async.parallel obj, (err,results)->
   p4 = "topath=null&accountType=1&userName=080300007199&"
   p5 = "servicePwd=19660522&trdpwd=2d8c0c21d479305c539e7a49ecd87d4d&vcode=#{vcode.trim()}"
 
-  payload = "#{p1}#{p2}#{p4}#{p5}"
+  #payload = "#{p1}#{p2}#{p4}#{p5}"
 
-  backup = {
-      loginEvent: 1
-      topath: null
-      accountType: 1
-      userType: 'jy'
-      userName: userName
-      trdpwd: trdpwd
-      trdpwdEns: trdpwdEns
-      servicePwd: servicePwd
-      macaddr:'60:33:4B:09:BF:0F'
-      lipInfo: "#{ip}"
-      vcode: "#{vcode.trim()}"
-      hddInfo: "#{hddInfo}"
-    }
+  serialize = (obj) ->
+   str = []
+   for p,v of obj
+    if obj.hasOwnProperty(p)
+     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
+   str.join("&")
+
+  payload =
+    loginEvent: 1
+    trdpwdEns: 19660522#trdpwdEns
+    macaddr:'60:33:4B:09:BF:0F'
+    hddInfo: "#{hddInfo}"
+    lipInfo: "#{ip}"
+    topath: null
+    accountType: 1
+    userName: userName
+    servicePwd: servicePwd
+    trdpwd: trdpwd
+    vcode: "#{vcode.trim()}"
+    userType: 'jy'
 
   callback = (err, resp, body)->
     if err
@@ -121,7 +127,7 @@ async.parallel obj, (err,results)->
       else
         console.log resp.cookies, body
 
-  needle.post url, options, payload, callback
+  needle.post url, options, serialize(payload), callback
   #needle.post url, payload, options, callback
 ####
 
