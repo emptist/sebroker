@@ -131,3 +131,12 @@ https://www.npmjs.com/package/client-request
 https://www.npmjs.com/package/retry-request
 https://www.npmjs.com/package/oauth-request
 https://github.com/FGRibreau/node-request-retry/blob/master/package.json
+
+
+
+# brokers
+https://www.tdameritrade.com/api.page
+https://us.etrade.com/active-trading/api
+https://dev.firstrade.com/docs
+https://developers.tradeking.com/
+https://www.dukascopy.com/swiss/english/forex/api/jforex_api/
