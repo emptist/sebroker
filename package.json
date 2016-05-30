@@ -40,6 +40,8 @@
     "ocr-by-image-url": "0.0.1",
     "querystring": "^0.2.0",
     "request": "^2.69.0",
+    "run-parallel": "^1.1.6",
+    "run-series": "^1.1.4",
     "run-waterfall": "^1.1.3"
   }
 }

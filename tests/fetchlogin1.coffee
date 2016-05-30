@@ -2,16 +2,15 @@
 
 util = require 'util'
 async = require 'async'
-#qs = require 'querystring'
+request = require 'request'
 vcode = require './getvcode'
 hddInfo = require './hddInfo' #'ST9120817AS'
 address = require './getaddress'
 {userName,trdpwd,trdpwdEns,servicePwd} = require './.mainaccount'
 {postheaders,getheaders}=require '../refs/experiments/options'
 {fetchUrl, fetchStream,CookieJar} = require 'fetch'
-
-
-#delete postheaders.cookies
+waterfall = require 'run-waterfall'
+parallel = require 'run-parallel'
 
 cookies = new CookieJar()
 #cookies.setCookie getheaders.cookies
@@ -19,15 +18,18 @@ oldcookies = cookies
 
 
 url = 'https://service.htsc.com.cn/service/login.jsp'
-fetchpage = (callback) ->
-  fetchUrl url,
-    {headers: getheaders
-    method: 'GET'
-    #cookies: cookies
-    cookieJar: cookies },
-    (err,meta, body) ->
-      callback err,meta,body
+cookieopt =
+  headers: getheaders
+  method: 'GET'
+  cookieJar: cookies
 
-fetchpage (err, meta, body)->
-  debugger
-  console.log meta #, body.toString()
+fcookie = (callback) ->
+  setTimeout ->
+    fetchUrl url,cookieopt, (err,meta, body) ->
+      callback err,meta.responseHeaders['set-cookie'].join(',')
+
+vcode = (callback)-> setTimeout (-> vcode vcurl, callback), 200
+ipmac = (callback)-> setTimeout (-> address callback), 400
+
+waterfall [ fetchCookie, ipmac, vcode ], (err, results)->
+  [cookie, mac, code] = results

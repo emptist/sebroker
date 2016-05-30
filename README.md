@@ -121,6 +121,8 @@ ocr.getImageText('http://image.com/cat.png', proxy, function(error, text){
 # misc
 https://coderwall.com/p/9cifuw/scraping-web-pages-using-node-js-using-request-promise
 
+# translate curl into node.js
+http://curl.trillworks.com/#node
 
 # request enhancement
 needle
