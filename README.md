@@ -142,3 +142,8 @@ https://us.etrade.com/active-trading/api
 https://dev.firstrade.com/docs
 https://developers.tradeking.com/
 https://www.dukascopy.com/swiss/english/forex/api/jforex_api/
+# ... with paper trading,commission-free-etfs...
+http://www.stockbrokers.com/feature/virtual-trading
+http://www.stockbrokers.com/feature/commission-free-etfs
+https://investorjunkie.com/14217/virtual-trading-account/
+http://www.thedigeratilife.com/investing/virtual-stock-trading-brokers
